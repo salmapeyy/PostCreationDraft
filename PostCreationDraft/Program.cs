@@ -20,7 +20,7 @@ class Program
 			Console.WriteLine("Post Management System");
 			Console.WriteLine("1. Create a post");
 			Console.WriteLine("2. Edit a post");
-			Console.WriteLine("3. Delete a post");
+			Console.WriteLine("3. Want to Delete a Post");
 			Console.WriteLine("4. List all posts");
 			Console.WriteLine("5. Exit");
 			Console.Write("Select an option: ");
