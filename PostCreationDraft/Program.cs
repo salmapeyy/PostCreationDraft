@@ -1,30 +1,35 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Security.Authentication.ExtendedProtection;
+using System.Security.Cryptography.X509Certificates;
 
-class Account
+class Account	//MODELS LAYER
 {
 	public string Username { get; set; }
 	public string Password { get; set; }
 	public string Name { get; set; }
 	public string StudentNumber { get; set; }
+	public string AdminNumber { get; set; }
 
-	public Account(string username, string password, string name, string studentNumber)
+	public Account(string username, string password, string name, string studentNumber, string adminNumber)	//models
 	{
 		Username = username;
 		Password = password;
 		Name = name;
 		StudentNumber = studentNumber;
+		AdminNumber = adminNumber;
 	}
 }
 
-class Post
+class Post	//model
 {
 	public int PostNumber { get; set; }
 	public string Content { get; set; }
 	public DateTime DateTimePosted { get; set; }
 
-	public Post(int postNumber, string content)
+	public Post(int postNumber, string content)		//model
 	{
 		PostNumber = postNumber;
 		Content = content;
@@ -34,7 +39,7 @@ class Post
 
 class Program
 {
-	static List<Account> accounts = new List<Account>();
+	static List<Account> accounts = new List<Account>();	//data layer
 	static List<Post> posts = new List<Post>();
 	static string loggedInUser = null;
 
@@ -43,7 +48,7 @@ class Program
 
 		bool exit = false;
 
-		while (!exit)
+		while (!exit)		//business layer
 		{
 			if (loggedInUser == null)
 			{
@@ -53,6 +58,8 @@ class Program
 
 				switch (option)
 				{
+					case "0": AdminAcc();
+						break;
 					case "1":
 						Login();
 						break;
@@ -110,16 +117,17 @@ class Program
 		}
 	}
 
-	static void ShowLoginMenu()
+	static void ShowLoginMenu()		//UI
 	{
 		Console.WriteLine("PUP HUB BULLETIN BOARD");
+		Console.WriteLine("0. Login as Admin");
 		Console.WriteLine("1. Login");
 		Console.WriteLine("2. Create an account");
 		Console.WriteLine("3. Exit");
 		Console.Write("Select an option: ");
 	}
 
-	static void ShowMenu()
+	static void ShowMenu()		//UI
 	{
 		Console.WriteLine($"Welcome, {loggedInUser}!");
 		Console.WriteLine("1. Create a post");
@@ -132,20 +140,20 @@ class Program
 		Console.Write("Select an option: ");
 	}
 
-	static void CreateAccount()
+	static void CreateAccount()		
 	{
-		Console.WriteLine("Creating a new account");
+		Console.WriteLine("Creating a new account");	//BUSINESS
 
 		Console.Write("Enter a username: ");
 		string username = Console.ReadLine();
 
-		if (IsUsernameTaken(username))
+		if (IsUsernameTaken(username))		//DATA 
 		{
 			Console.WriteLine("Username already taken. Please choose a different username.");
 			return;
 		}
 
-		Console.Write("Enter a password: ");
+		Console.Write("Enter a password: ");		//DATA
 		string password = Console.ReadLine();
 
 		Console.Write("Enter your name(Last Name, First Name, MI): ");
@@ -157,14 +165,14 @@ class Program
 		Account account = new Account(username, password, name, studentNumber);
 		accounts.Add(account);
 
-		Console.WriteLine("Account created successfully!");
+		Console.WriteLine("Account created successfully!");		
 		Console.WriteLine("Account Details:");
 		Console.WriteLine($"Username: {account.Username}");
 		Console.WriteLine($"Name: {account.Name}");
 		Console.WriteLine($"Student Number: {account.StudentNumber}");
 	}
 
-	static bool IsUsernameTaken(string username)
+	static bool IsUsernameTaken(string username)	//BUSINESS
 	{
 		foreach (var account in accounts)
 		{
@@ -177,7 +185,7 @@ class Program
 		return false;
 	}
 
-	static void Login()
+	static void Login()		
 	{
 		Console.Write("Enter your username: ");
 		string username = Console.ReadLine();
@@ -185,7 +193,7 @@ class Program
 		Console.Write("Enter your password: ");
 		string password = Console.ReadLine();
 
-		Account account = GetAccount(username);
+		Account account = GetAccount(username);		//DATA
 
 		if (account != null && account.Password == password)
 		{
@@ -198,7 +206,7 @@ class Program
 		}
 	}
 
-	static Account GetAccount(string username)
+	static Account GetAccount(string username)		//BUSINESS
 	{
 		foreach (var account in accounts)
 		{
@@ -211,13 +219,13 @@ class Program
 		return null;
 	}
 
-	static void Logout()
+	static void Logout()	//BUSINESS
 	{
 		loggedInUser = null;
 		Console.WriteLine("Logged out successfully!");
 	}
 
-	static void CreatePost()
+	static void CreatePost()	//DATA
 	{
 		Console.WriteLine("Creating a new post");
 
@@ -232,7 +240,7 @@ class Program
 		Console.WriteLine("Post created successfully!");
 	}
 
-	static int GetNextPostNumber()
+	static int GetNextPostNumber()		//BUSINESS
 	{
 		if (posts.Count > 0)
 		{
@@ -253,7 +261,7 @@ class Program
 
 		Post post = GetPostByNumber(postNumber);
 
-		if (post != null)
+		if (post != null)	//BUSINESS
 		{
 			Console.Write("Enter new post content: ");
 			string newContent = Console.ReadLine();
@@ -277,9 +285,9 @@ class Program
 		Console.Write("Enter the number of the post to delete: ");
 		int postNumber = int.Parse(Console.ReadLine());
 
-		Post post = GetPostByNumber(postNumber);
+		Post post = GetPostByNumber(postNumber);	
 
-		if (post != null)
+		if (post != null)	//BUSINESS
 		{
 			posts.Remove(post);
 
@@ -295,7 +303,7 @@ class Program
 	{
 		Console.WriteLine("List of posts:");
 
-		if (posts.Count == 0)
+		if (posts.Count == 0)	//BUSINESS
 		{
 			Console.WriteLine("No posts available.");
 		}
@@ -313,7 +321,7 @@ class Program
 
 	static Post GetPostByNumber(int postNumber)
 	{
-		foreach (var post in posts)
+		foreach (var post in posts)		//BUSINESS
 		{
 			if (post.PostNumber == postNumber)
 			{
@@ -328,7 +336,7 @@ class Program
 	{
 		Account account = GetAccount(loggedInUser);
 
-		if (account != null)
+		if (account != null)	//BUSINES
 		{
 			Console.WriteLine("Account Details:");
 			Console.WriteLine($"Username: {account.Username}");
@@ -339,5 +347,49 @@ class Program
 		{
 			Console.WriteLine("Account not found.");
 		}
+	}
+
+	class AdminAccess
+	{
+		public string AdminNumber;
+		public string Password;
+
+		public AdminAccess(string AdminNumber, string Password)
+		{
+			this.AdminNumber = AdminNumber;
+			this.Password = Password;
+			
+		}
+		
+		public void AdminAcc()
+		{
+			Console.WriteLine("Enter Admin Number: ");
+			Console.ReadLine();
+			Console.WriteLine("Enter Password: ");
+			Console.ReadLine();
+			if (AdminNumber == "Ad123" && Password == "222")
+			{
+				Console.WriteLine("SUCCESSFULLY LOGGED IN!");
+			
+			}
+			else
+			{
+				Console.WriteLine("INVALID DATA PLEASE TRY AGAIN!");
+				ShowLoginMenu();
+			}
+
+			
+		} 
+
+		static void ShowAdminMenu()
+		{
+			Console.WriteLine("Lis");
+		}
+		
+
+
+
+
+
 	}
 }
