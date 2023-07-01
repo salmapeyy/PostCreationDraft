@@ -8,13 +8,13 @@ namespace RULES
     {
         static Account GetAccount(string username)
         {
-            foreach (var account in accounts)
-            {
-                if (account.Username == username)
-                {
-                    return account;
-                }
-            }
+            //foreach (var account in accounts)
+            //{
+            //    if (account.Username == username)
+            //    {
+            //        return account;
+            //    }
+            //}
 
             return null;
         }

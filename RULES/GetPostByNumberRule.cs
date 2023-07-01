@@ -8,13 +8,13 @@ namespace RULES
     {
         static Post GetPostByNumber(int postNumber)
         {
-            foreach (var post in posts)
-            {
-                if (post.PostNumber == postNumber)
-                {
-                    return post;
-                }
-            }
+            //foreach (var post in posts)
+            //{
+            //    if (post.PostNumber == postNumber)
+            //    {
+            //        return post;
+            //    }
+            //}
 
             return null;
         }
